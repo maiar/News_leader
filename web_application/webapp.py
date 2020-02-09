@@ -5,6 +5,7 @@ import pandas as pd
 from datetime import datetime as dt
 import psycopg2
 import psycopg2.extras
+import plotly.graph_objs as go
 
 conn = psycopg2.connect(
     database="newsLeader",
@@ -52,9 +53,29 @@ app.layout = html.Div([
     
     html.Div([
         html.H4(children='Table view'),
-        generate_table(df)
-    ], style={'columnCount': 1,'width': '52%'})
+        generate_table(df),
+        dcc.Graph(
+            id="graph-1",
+            figure={
+                "data": [
+                    go.Bar(
+                        x=df[0],
+                        y=df[1],
+                        marker={
+                            "color": "#97151c",
+                            "line": {
+                                "color": "rgb(255, 255, 255)",
+                                "width": 2,
+                            },
+                        },
+                        name="Calibre Index Fund",
+                    ),
+                ], 
+            },
+        )
+    ], style={'columnCount': 1,'width': '52%', 'align': 'center'}),
 ])
 
 if __name__ == '__main__':
-    app.run_server(debug=True, port = 8060, host='ec2-35-171-44-44.compute-1.amazonaws.com')
+    #app.run_server(debug=True, port = 8060, host='ec2-35-171-44-44.compute-1.amazonaws.com')
+    app.run_server(debug=True)
