@@ -17,7 +17,7 @@ conn = psycopg2.connect(
 
 cur = conn.cursor()
 
-newsDf = cur.execute("""SELECT "MentionIdentifier", "NumofCitation" FROM public.news ORDER BY "NumofCitation" DESC LIMIT 10""")
+newsDf = cur.execute("""SELECT "MentionIdentifier", "count" FROM public.citations ORDER BY "count" DESC LIMIT 10""")
 rows = cur.fetchall()
 
 df = pd.DataFrame(rows)
@@ -53,7 +53,6 @@ app.layout = html.Div([
     
     html.Div([
         html.H4(children='Table view'),
-        generate_table(df),
         dcc.Graph(
             id="graph-1",
             figure={
@@ -72,7 +71,9 @@ app.layout = html.Div([
                     ),
                 ], 
             },
-        )
+        ),
+        generate_table(df)
+        
     ], style={'columnCount': 1,'width': '52%', 'align': 'center'}),
 ])
 
