@@ -24,49 +24,39 @@ from pyspark.sql import SQLContext
 from pyspark.sql.types import *
 import pyspark
 from pyspark.sql import Row
+from pyspark.sql import DataFrameWriter
+import re
 
 if __name__ == "__main__":
     spark = SparkSession\
         .builder\
         .appName("GFGData")\
         .getOrCreate()
+    mentionFileStr = 's3a://gdelt-open-data/v2/mentions/20150603******'+'.mentions.csv'
+    eventFileStr = 's3a://gdelt-open-data/v2/events/20150623******'+'.export.csv'
+    #mentionFileStr = 's3a://gdelt-open-data/v2/mentions/20150603061500'+'.mentions.csv'
+    #eventFileStr = 's3a://gdelt-open-data/v2/events/20150623061500'+'.export.csv'
+    print(eventFileStr)
+    print(mentionFileStr)
 
     sqlContext = SQLContext(sparkContext=spark.sparkContext, sparkSession=spark)
-    t1 = sqlContext.read.load('s3a://liangchun-bucket/20150603061500.mentions.csv', format='com.databricks.spark.csv', inferSchema='true')
-    t2 = sqlContext.read.load('s3a://liangchun-bucket/20150623061500.export.csv', format='com.databricks.spark.csv', inferSchema='true')
-    t1 = t1.selectExpr('SPLIT(_c0, "\t")[0] AS GlobalEventID', 'SPLIT(_c0, "\t")[1] AS EventTimeDate', 'SPLIT(_c0, "\t")[2] AS MentionTimeDate', 'SPLIT(_c0, "\t")[3] AS MentionType','SPLIT(_c0, "\t")[4] AS MentionSourceName', 'SPLIT(_c0, "\t")[5] AS MentionIdentifier')
-    links = t1.select("MentionIdentifier")
-    links.show()
+    mentionDf = sqlContext.read.load(mentionFileStr, format='com.databricks.spark.csv', inferSchema='true')
+    eventDf = sqlContext.read.load(eventFileStr, format='com.databricks.spark.csv', inferSchema='true')
+    mentionDf = mentionDf.selectExpr('SPLIT(_c0, "\t")[0] AS GlobalEventID', 'SPLIT(_c0, "\t")[1] AS EventTimeDate', 'SPLIT(_c0, "\t")[2] AS MentionTimeDate', 'SPLIT(_c0, "\t")[3] AS MentionType','SPLIT(_c0, "\t")[4] AS MentionSourceName', 'SPLIT(_c0, "\t")[5] AS MentionIdentifier')
+    eventDf = eventDf.selectExpr('SPLIT(_c0, "\t")[0] AS GlobalEventID', 'SPLIT(_c0, "\t")[25] AS IsRootEvent', 'SPLIT(_c0, "\t")[40] AS Lat', 'SPLIT(_c0, "\t")[41] AS Long')    
 
-    linkRdd = links.rdd
-    linkRdd.take(3)
-    counts = linkRdd.map(lambda x: (x, 1)).reduceByKey(add)
-    output = counts.collect()
+    mentionDf.printSchema()
+    eventDf.printSchema()
+    citationDf = mentionDf.groupBy("MentionIdentifier").count()
+    citationDf.show()
 
-    #for (word, count) in output:
-    #    print("%s: %i" % (word, count))
-    print(output)
+    mentionDf.write \
+    .jdbc("jdbc:postgresql://liangchun-database.csbeke3v1jfz.us-east-1.rds.amazonaws.com:5432/newsLeader", "public.mentions", properties={"user": "postgres", "password": "Tianya1990"}, mode = "overwrite") 
+   
+    eventDf.write \
+    .jdbc("jdbc:postgresql://liangchun-database.csbeke3v1jfz.us-east-1.rds.amazonaws.com:5432/newsLeader", "public.events", properties={"user": "postgres", "password": "Tianya1990"}, mode = "overwrite") 
 
-    #field1 = StructType([StructField("Links", StringType())])
-    #field2 = StructType([StructField("Total", IntegerType())])
-    linkName = [i[0] for i in output]
-    citeNum = [i[1] for i in output]
-    R1 = Row('ID', 'MentionIdentifier')
-    R2 = Row('ID', 'NumofCitation')
-    linkDf = spark.createDataFrame([R1(i, x) for i, x in enumerate(linkName)])
-    citeDf = spark.createDataFrame([R2(i, x) for i, x in enumerate(citeNum)])
-    #linkDf = spark.createDataFrame(linkName, schema=field1)
-    #citeDf = spark.createDataFrame(citeNum, IntegerType())
-    linkDf.show()
-    citeDf.show()
-    #t1.show()
-    #t2.show()
-    #df.show()
-    #df.take(2)
-    #linkRankDf = linkDf.join(citeDf,"outer")
-    #linkRankDf.show()
-    tl = linkDf.alias('tl')
-    tc = citeDf.alias('tc')
-    innerjoin = tl.join(tc,tl.ID == tc.ID)
-    innerjoin.show()
+    citationDf.write \
+    .jdbc("jdbc:postgresql://liangchun-database.csbeke3v1jfz.us-east-1.rds.amazonaws.com:5432/newsLeader", "public.citations", properties={"user": "postgres", "password": "Tianya1990"}, mode = "overwrite")    
+
     spark.stop()
