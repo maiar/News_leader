@@ -128,7 +128,7 @@ def assemble_parts_to_concatenate(s3, result_filename, upload_id, parts_list):
         temp_filename = "/tmp/{}".format(source_part.replace("/","_"))
         s3.download_file(Bucket=BUCKET, Key=source_part, Filename=temp_filename)
 
-        with open(temp_filename, 'rb') as f:
+        with open(temp_filename, 'r') as f:
             small_parts.append(f.read())
         os.remove(temp_filename)
         logging.warning("Downloaded and copied small part with path: {}".format(source_part))

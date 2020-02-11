@@ -1,4 +1,4 @@
-# censed to the Apache Software Foundation (ASF) under one or more
+# Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
 # The ASF licenses this file to You under the Apache License, Version 2.0
@@ -32,10 +32,12 @@ if __name__ == "__main__":
         .builder\
         .appName("GFGData")\
         .getOrCreate()
-    mentionFileStr = 's3a://gdelt-open-data/v2/mentions/20150603******'+'.mentions.csv'
-    eventFileStr = 's3a://gdelt-open-data/v2/events/20150623******'+'.export.csv'
-    #mentionFileStr = 's3a://gdelt-open-data/v2/mentions/20150603061500'+'.mentions.csv'
-    #eventFileStr = 's3a://gdelt-open-data/v2/events/20150623061500'+'.export.csv'
+    mentionFileStr = 's3a://gdelt-open-data/v2/mentions/20150603061500'+'.mentions.csv'
+    eventFileStr = 's3a://gdelt-open-data/v2/events/20150623061500'+'.export.csv'
+    #mentionFileStr = 's3a://gdelt-open-data/v2/mentions/20150603??????'+'.mentions.csv'
+    #eventFileStr = 's3a://gdelt-open-data/v2/events/20150623??????'+'.export.csv'
+    #mentionFileStr = 's3a://liangchun-bucket/output/day1.csv-0'
+    #eventFileStr = 's3a://liangchun-bucket/output/events.csv-0'
     print(eventFileStr)
     print(mentionFileStr)
 
