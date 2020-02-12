@@ -125,11 +125,16 @@ def assemble_parts_to_concatenate(s3, result_filename, upload_id, parts_list):
     # multi-part upload (which is not constrained to the 5mb limit)
     small_parts = []
     for source_part in local_parts:
+        print(source_part)
+        print("\n")
         temp_filename = "/tmp/{}".format(source_part.replace("/","_"))
+        # print(temp_filename)
         s3.download_file(Bucket=BUCKET, Key=source_part, Filename=temp_filename)
 
         with open(temp_filename, 'r') as f:
-            small_parts.append(f.read())
+            cont = f.read()
+            small_parts.append(cont)
+            # print(cont)
         os.remove(temp_filename)
         logging.warning("Downloaded and copied small part with path: {}".format(source_part))
 
@@ -139,7 +144,7 @@ def assemble_parts_to_concatenate(s3, result_filename, upload_id, parts_list):
         #for i in range(len(small_parts)):
         #    print(small_parts[i])
 
-        last_part = ''.join(str(small_parts))
+        last_part = ''.join(small_parts)
         resp = s3.upload_part(Bucket=BUCKET, Key=result_filename, PartNumber=last_part_num, UploadId=upload_id, Body=last_part)
         logging.warning("Setup local part #{} from {} small files, and got response: {}".format(last_part_num, len(small_parts), resp))
         parts_mapping.append({'ETag': resp['ETag'][1:-1], 'PartNumber': last_part_num})
