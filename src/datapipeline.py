@@ -32,12 +32,12 @@ if __name__ == "__main__":
         .builder\
         .appName("GFGData")\
         .getOrCreate()
-    mentionFileStr = 's3a://gdelt-open-data/v2/mentions/20150603061500'+'.mentions.csv'
-    eventFileStr = 's3a://gdelt-open-data/v2/events/20150623061500'+'.export.csv'
+    #mentionFileStr = 's3a://gdelt-open-data/v2/mentions/20150603061500'+'.mentions.csv'
+    #eventFileStr = 's3a://gdelt-open-data/v2/events/20150623061500'+'.export.csv'
     #mentionFileStr = 's3a://gdelt-open-data/v2/mentions/20150603??????'+'.mentions.csv'
     #eventFileStr = 's3a://gdelt-open-data/v2/events/20150623??????'+'.export.csv'
-    #mentionFileStr = 's3a://liangchun-bucket/output/day1.csv-0'
-    #eventFileStr = 's3a://liangchun-bucket/output/events.csv-0'
+    mentionFileStr = 's3a://liangchun-bucket/output/mentions.csv-0'
+    eventFileStr = 's3a://liangchun-bucket/output/events.csv-0'
     print(eventFileStr)
     print(mentionFileStr)
 
