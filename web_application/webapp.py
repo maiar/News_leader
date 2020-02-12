@@ -52,7 +52,7 @@ app.layout = html.Div([
     ),
     
     html.Div([
-        html.H4(children='Table view'),
+        html.H4(children='Plot view'),
         dcc.Graph(
             id="graph-1",
             figure={
@@ -72,11 +72,11 @@ app.layout = html.Div([
                 ], 
             },
         ),
-        generate_table(df)
-        
-    ], style={'columnCount': 1,'width': '52%', 'align': 'center'}),
-])
+        html.H4(children='Table view'),
+        generate_table(df)        
+    ]),
+], style={'width': '54%','margin': '0 auto', 'margin-left': '%23', 'text-align': 'center'})
 
 if __name__ == '__main__':
-    #app.run_server(debug=True, port = 8060, host='ec2-35-171-44-44.compute-1.amazonaws.com')
-    app.run_server(debug=True)
+    app.run_server(debug=True, port = 8060, host='ec2-35-171-44-44.compute-1.amazonaws.com')
+    #app.run_server(debug=True)
