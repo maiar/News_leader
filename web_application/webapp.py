@@ -39,44 +39,73 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.layout = html.Div([
     html.Div([
-        html.H1(children='News Leaders: trace the most cited news articles')
+            html.Img(
+            src=app.get_asset_url('frontend.png'),
+            style={'width': '100%', 'margin': '0'}
+        ),
     ]),
 
-    dcc.DatePickerRange(
-        id='my-date-picker-range',
-        min_date_allowed=dt(1995, 8, 5),
-        max_date_allowed=dt(2020, 2, 7),
-        initial_visible_month=dt(2020, 2, 6),
-        end_date=dt(2019, 12, 25),
-        start_date = dt(2019, 11, 25)
-    ),
-    
     html.Div([
-        html.H4(children='Plot view'),
-        dcc.Graph(
-            id="graph-1",
-            figure={
-                "data": [
-                    go.Bar(
-                        x=df[0],
-                        y=df[1],
-                        marker={
-                            "color": "#97151c",
-                            "line": {
-                                "color": "rgb(255, 255, 255)",
-                                "width": 2,
+        html.Div([
+            html.H1(children='News Leaders: trace the most cited news articles')
+        ]),
+
+        html.Div([
+            dcc.DatePickerRange(
+                id='date-picker-range',
+                min_date_allowed=dt(1995, 8, 5),
+                max_date_allowed=dt(2020, 2, 7),
+                initial_visible_month=dt(2020, 2, 6),
+                end_date=dt(2019, 12, 25),
+                start_date = dt(2019, 11, 25),
+                style={'margin-right': '1.5em'}
+            ), 
+            html.Button('Submit', id='button')
+        ]),
+    
+    
+        html.Div([
+            html.H4(children='Plot view'),
+            dcc.Graph(
+                id="bar-plot",
+                figure={
+                    "data": [
+                        go.Bar(
+                            x=df[0],
+                            y=df[1],
+                            marker={
+                                "color": "#97151c",
+                                "line": {
+                                    "color": "rgb(255, 255, 255)",
+                                    "width": 2,
+                                },
                             },
-                        },
-                        name="Calibre Index Fund",
-                    ),
-                ], 
-            },
-        ),
-        html.H4(children='Table view'),
-        generate_table(df)        
-    ]),
-], style={'width': '54%','margin': '0 auto', 'margin-left': '%23', 'text-align': 'center'})
+                            name="Calibre Index Fund",
+                        ),
+                    ], 
+                },
+            ),
+            html.H4(children='Table view'),
+            generate_table(df)        
+        ]),
+    ], style={'width': '54%','margin': '0 auto', 'text-align': 'center'})   
+], style={'margin': '0'}
+)
+
+'''
+@app.callback(
+    dash.dependencies.Output('bar-plot', 'selectedData'),
+    [dash.dependencies.Input('button', 'n_clicks')],
+    [dash.dependencies.State('date-picker-range', 'start_date')])
+def update_output(n_clicks, start_date):
+    string_prefix = 'You have selected: '
+    if date is not None:
+        date = dt.strptime(date.split(' ')[0], '%Y-%m-%d')
+        date_string = date.strftime('%B %d, %Y')
+        return string_prefix + date_string
+    print(string_prefix+date_string)
+'''
 
 if __name__ == '__main__':
-    app.run_server(debug=True, port = 8060, host='ec2-35-171-44-44.compute-1.amazonaws.com')
-    #app.run_server(debug=True)
+    #app.run_server(debug=True, port = 8060, host='ec2-35-171-44-44.compute-1.amazonaws.com')
+    app.run_server(debug=True)
