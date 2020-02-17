@@ -17,8 +17,9 @@ conn = psycopg2.connect(
 
 cur = conn.cursor()
 
-newsDf = cur.execute("""SELECT "MentionIdentifier", "count" FROM public.citations ORDER BY "count" DESC LIMIT 10""")
+newsDf = cur.execute("""SELECT a.*, b.count FROM public.events a INNER JOIN (SELECT * FROM public.citations AS ranks ORDER BY "count" DESC LIMIT 10) b ON a."GlobalEventID" = b."GlobalEventID" ORDER BY "count" DESC;""")
 rows = cur.fetchall()
+print(rows.columns)
 
 df = pd.DataFrame(rows)
 
@@ -47,7 +48,7 @@ app.layout = html.Div([
 
     html.Div([
         html.Div([
-            html.H1(children='News Leaders: trace the most cited news articles')
+            html.H1(children='News Leaders: trace the most reported news events')
         ]),
 
         html.Div([
@@ -71,7 +72,7 @@ app.layout = html.Div([
                 figure={
                     "data": [
                         go.Bar(
-                            x=df[0],
+                            x=list(str(df[0])),
                             y=df[1],
                             marker={
                                 "color": "#97151c",
@@ -88,8 +89,8 @@ app.layout = html.Div([
             html.H4(children='Table view'),
             generate_table(df)        
         ]),
-    ], style={'width': '54%','margin': '0 auto', 'text-align': 'center'})   
-], style={'margin': '0'}
+    ], style={'width': '80%','margin': '0 auto', 'text-align': 'center'})   
+], style={'margin': '0 auto'}
 )
 
 '''
@@ -107,5 +108,5 @@ def update_output(n_clicks, start_date):
 '''
 
 if __name__ == '__main__':
-    #app.run_server(debug=True, port = 8060, host='ec2-35-171-44-44.compute-1.amazonaws.com')
-    app.run_server(debug=True)
+    app.run_server(debug=True, port = 8060, host='ec2-35-171-44-44.compute-1.amazonaws.com')
+    #app.run_server(debug=True)
