@@ -18,7 +18,8 @@ conn = psycopg2.connect(
     port='5432'
 )
 
-df = psql.read_sql("""SELECT a.*, b.count FROM public.events a INNER JOIN (SELECT * FROM public.citations AS ranks ORDER BY "count" DESC LIMIT 10) b ON a."GlobalEventID" = b."GlobalEventID" ORDER BY "count" DESC;""", conn)
+df = psql.read_sql("""SELECT * FROM public.newshouse WHERE "EventDateTime" BETWEEN 20190118 AND 20190125 ORDER BY "ArticleCounts" DESC LIMIT 10;""", conn)
+# df = psql.read_sql("""SELECT * FROM public.newsbase WHERE "EventDateTime" BETWEEN 20191219 AND 20200125 ORDER BY "ArticleCounts" DESC LIMIT 10;""", conn)
 df['EventDateTime'] = pd.to_datetime(df['EventDateTime'], format='%Y%m%d', errors='coerce')
 df.EventDateTime = pd.DatetimeIndex(df.EventDateTime).strftime("%Y-%m-%d")
 #df.index = df['EventDateTime']
@@ -78,8 +79,8 @@ app.layout = html.Div([
                 figure={
                     "data": [
                         go.Bar(
-                            x=df['Url'],
-                            y=df['count'],
+                            x=df['SourceUrl'],
+                            y=df['ArticleCounts'],
                             marker={
                                 "color": "#97151c",
                                 "line": {
@@ -95,7 +96,9 @@ app.layout = html.Div([
             html.H4(children='Table view'),
             
             #html.Div(id='table')
-            generate_table(df)
+            generate_table(df),
+
+            html.H3(children='Liangchun Xu\t\t\tTufts PhD | Insight Data Engineering')
         ]),
     ], style={'width': '80%','margin': '0 auto', 'text-align': 'center'})   
 ], style={'margin': '0'}

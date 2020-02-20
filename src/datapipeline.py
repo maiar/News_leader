@@ -36,11 +36,11 @@ if __name__ == "__main__":
     #mentionFileStr = 's3a://gdelt-open-data/v2/mentions/20150603061500'+'.mentions.csv'
     #eventFileStr = 's3a://gdelt-open-data/v2/events/20150623061500'+'.export.csv'
 
-    #mentionFileStr = 's3a://liangchun-bucket/data19/mentions01-0.csv'
-    #eventFileStr = 's3a://liangchun-bucket/data19/events01-0.csv'
+    mentionFileStr = 's3a://liangchun-bucket/data19/mentions2020.csv'
+    eventFileStr = 's3a://liangchun-bucket/data19/events2020.csv'
    
-    mentionFileStr = 's3a://liangchun-bucket/data19/mentions.csv'
-    eventFileStr = 's3a://liangchun-bucket/data19/events.csv'
+    #mentionFileStr = 's3a://liangchun-bucket/data19/mentions.csv'
+    #eventFileStr = 's3a://liangchun-bucket/data19/events.csv'
     print(eventFileStr)
     print(mentionFileStr)
 
