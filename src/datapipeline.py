@@ -65,7 +65,10 @@ if __name__ == "__main__":
     reportedDf.show()
 
     # write the news ranking table into the postgresql
+    #reportedDf.write \
+    #.jdbc("jdbc:postgresql://liangchun-database.csbeke3v1jfz.us-east-1.rds.amazonaws.com:5432/newsLeader", "public.newsBase", properties={"user": "postgres", "password": "Tianya1990"}, mode = "overwrite")    
+    
     reportedDf.write \
-    .jdbc("jdbc:postgresql://liangchun-database.csbeke3v1jfz.us-east-1.rds.amazonaws.com:5432/newsLeader", "public.newsBase", properties={"user": "postgres", "password": "Tianya1990"}, mode = "overwrite")    
+    .jdbc("jdbc:postgresql://liangchun-database.csbeke3v1jfz.us-east-1.rds.amazonaws.com:5432/newsLeader", "public.news2020", properties={"user": "postgres", "password": "Tianya1990"}, mode = "overwrite")    
 
     spark.stop()
