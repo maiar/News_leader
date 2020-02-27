@@ -22,10 +22,11 @@ conn = psycopg2.connect(
 
 df = "global"
 
-df = psql.read_sql("""SELECT * FROM public.news2020 WHERE "EventDateTime" BETWEEN 20191219 AND 20200125 ORDER BY "ArticleCounts" DESC LIMIT 10;""", conn)
+df = psql.read_sql("""SELECT * FROM public.news2020 ORDER BY "ArticleCounts" DESC LIMIT 10;""", conn)
 # df = psql.read_sql("""SELECT * FROM public.newsbase WHERE "EventDateTime" BETWEEN 20191219 AND 20200125 ORDER BY "ArticleCounts" DESC LIMIT 10;""", conn)
 df['EventDateTime'] = pd.to_datetime(df['EventDateTime'], format='%Y%m%d', errors='coerce')
 df.EventDateTime = pd.DatetimeIndex(df.EventDateTime).strftime("%Y-%m-%d")
+df = df.drop(columns=['IsRootEvent'])
 #df.index = df['EventDateTime']
 
 conn = None
@@ -98,19 +99,25 @@ app.layout = html.Div([
         ]),
 
         html.Div([
+            html.H4(children='Table view'),
+            
+            html.Div(id='table'),
+            
+            html.H4(children='Map view'),
+            
+            dcc.Graph(id='map'),
+
             html.H4(children='Plot view'),
 
             html.Div(id="bar-plot"),
 
-            html.H4(children='Map view'),
+            #html.H4(children='Map view'),
 
-            dcc.Graph(id='map'),
+            #dcc.Graph(id='map'),
 
-            # html.Div(id="map"),
-
-            html.H4(children='Table view'),
+            #html.H4(children='Table view'),
             
-            html.Div(id='table'),
+            #html.Div(id='table'),
 
             html.H3(children='Liangchun Xu\tTufts PhD | Insight Data Science')
         ]),
@@ -143,8 +150,10 @@ def update_table(n_clicks, start_date, end_date):
     conn = None
 
     df.EventDateTime = pd.DatetimeIndex(df.EventDateTime).strftime("%Y-%m-%d")
+    df = df.drop(columns=['IsRootEvent'])
+
     return generate_table(df, max_rows=10), generate_plot(df, max_rows=10),  generate_map(df, max_rows=10) 
 
 if __name__ == '__main__':
-    app.run_server(debug=True, port = 8080, host='ec2-35-171-44-44.compute-1.amazonaws.com')
+    app.run_server(debug=True, port = 8060, host='ec2-35-171-44-44.compute-1.amazonaws.com')
     #app.run_server(debug=True)
