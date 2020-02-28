@@ -13,7 +13,7 @@
 
 ## Problem
 
-Numerous social events are reported everyday on Internet, but many of them are covered by the same article source. At Insight, I built a tool to quickly identify the top 10 cited news article links (News Leaders) in one day. It can help decision makers to assess the credibility of the most popular news sources.
+Numerous social events are reported everyday on Internet. To sift through large amount of information, at Insight, I built a tool to quickly identify the top 10 reported news events (News Leaders) in a given time. It can help decision makers to quickly reach the most popular news sources.
 
 ## Datasets
 The GDELT Event database v2.0 and the GDELT Mentions table, available on GDELT's [official website](http://data.gdeltproject.org/gdeltv2). 
@@ -37,11 +37,11 @@ The data pipeline is illustrated above. First the GDELT data is read into Amazon
 
 ## Demo
 
-[Here]() you can see a video of my application in the works. 
+[Here](https://www.youtube.com/watch?v=UZWLIDdekdg) you can see a video of my application in the works. 
 
 In the first part, you can see an example of data that is stored in an S3 Bucket. Then you see the front end, where the information is inputted. Then the program is run and we return to the S3 Bucket to see that our information is now there. Once we look at it, we see that the columns that were specified have been encrypted. 
 
-[Here]() you can watch a video of my presentation where I discuss this project, along with my [slides](). 
+Here you can see my [slides](https://bit.ly/2SCd4Nh). 
 
 ## Files in Repo 
 
